@@ -1,0 +1,209 @@
+//elements that connect to my HTML
+var begin = document.querySelector(".begin");
+var holdQuestion = document.querySelector(".quest");
+var startBt = document.querySelector("#start");
+var timer = document.querySelector("#time");
+var h2El = document.querySelector("#h2start");
+var scoreEl = document.querySelector("#score");
+var highScore = document.querySelector("#highS");
+var highList = document.querySelector("#hsList");
+//created elements
+var button1 = document.createElement("button");
+var button2 = document.createElement("button");
+var button3 = document.createElement("button");
+var button4 = document.createElement("button");
+var list1 = document.createElement("li");
+var list2 = document.createElement("li");
+var list3 = document.createElement("li");
+var list4 = document.createElement("li");
+var list5 = document.createElement("li");
+var aHighscore = document.createElement("button");
+var scoreText = document.createElement("textarea");
+var enter = document.createElement("button");
+
+var countdow = 20;      //varible to keep track of countdown
+var score = 0;          //varible to keep track of score
+var holdKey = "";
+// this object is the questions and answers and correct answer
+var questionEl = {
+   question: ["What key word do you use to get code that loops?","What data types can be in an object?","What method do you use to get all letters in a string to lower case?","How do you get content on webpage using Javascript?","How do you connect a element that you created in Javascript to your HTML?"],   //questions
+   a1: ["for","Boolean","lowerCase","word","child"],        //answer 1  
+   a2: ["if","String","toLowerCase","text","connectChild"],        //answer 2
+   a3: ["var","Number","toUpperCase","textContent","toHTML"],        //answer 3
+   a4: ["return","All of the Above","None of the above","content","appendChild"],        //answer 4
+   correct: ["for","All of the Above","toLowerCase","textContent","appendChild"]        //correct answer
+};
+
+//this event listener will start when the start button is pressed
+startBt.addEventListener("click", function(){
+    //reset score and countdown
+    countdow = 20;
+    score = 0;
+    // remove any elements that due not need to be hear
+    startBt.remove();
+    aHighscore.remove();
+    list1.remove();
+    list2.remove();
+    list3.remove();
+    list4.remove();
+    list5.remove();
+    // adds answer buttons
+    holdQuestion.appendChild(button1);
+    holdQuestion.appendChild(button2);
+    holdQuestion.appendChild(button3);
+    holdQuestion.appendChild(button4);
+  
+    activateTimer();
+    questionAndAnswer();
+})
+
+// this function gets the questions and answers and displays them for the user to guess
+function questionAndAnswer() {
+
+        var randomPos = randomNum(0,4);
+
+        h2El.textContent = questionEl["question"][randomPos];
+
+        button1.textContent = questionEl.a1[randomPos];
+        button2.textContent = questionEl.a2[randomPos];
+        button3.textContent = questionEl.a3[randomPos];
+        button4.textContent = questionEl.a4[randomPos];
+    
+        holdQuestion.addEventListener("click", function(event) {
+
+            var btnClick = event.target.textContent;
+
+        
+            if (btnClick == questionEl.correct[randomPos]){
+                score = score + 10;
+
+            } else {
+                if (countdow < 5) {
+                    countdow = 0;
+                } else {
+                    countdow = countdow - 5;
+                }
+            }
+        
+            scoreEl.textContent = "Score: " + score;
+
+            randomPos = randomNum(0,4);
+        
+            h2El.textContent = questionEl["question"][randomPos];
+        
+            button1.textContent = questionEl.a1[randomPos];
+            button2.textContent = questionEl.a2[randomPos];
+            button3.textContent = questionEl.a3[randomPos];
+            button4.textContent = questionEl.a4[randomPos];
+        
+            console.log(btnClick);
+            console.log(questionEl.correct[randomPos])
+            
+        })
+
+    
+    
+}
+//this function displays the most recent scores
+highScore.addEventListener("click",function() {
+    holdQuestion.appendChild(startBt);
+    startBt.textContent = "Start Game";
+    highScore.remove();
+    h2El.textContent = "Score!";
+
+    highList.appendChild(list1);
+    highList.appendChild(list2);
+    highList.appendChild(list3);
+    highList.appendChild(list4);
+    highList.appendChild(list5);
+    var p1 = localStorage.getItem("highscore1");
+    var p2 = localStorage.getItem("highscore2");
+    var p3 = localStorage.getItem("highscore3");
+    var p4 = localStorage.getItem("highscore4");
+    var p5 = localStorage.getItem("highscore5");
+
+    list1.textContent = p1;
+    list2.textContent = p2;
+    list3.textContent = p3;
+    list4.textContent = p4;
+    list5.textContent = p5;
+    startBt.textContent = "Start Game";
+})
+//thsi function allows the user to add their name and score to score borad
+aHighscore.addEventListener("click", function(){
+    startBt.remove();
+    aHighscore.remove();
+
+    h2El.textContent = "Please enter in your name.";
+    holdQuestion.appendChild(scoreText);
+
+    scoreText.addEventListener("keydown", function(event){
+        var key = event.key;
+
+        holdKey += key;
+
+    })
+    holdQuestion.appendChild(enter);
+    enter.textContent = "Enter";
+    enter.addEventListener("click", function(){
+        enter.remove();
+        scoreText.remove();
+        finalScore = holdKey + "-" + score;
+        console.log(finalScore);
+
+        list5 = list4;
+        list4 = list3;
+        list3 = list2;
+        list2 = list1;
+        list1 = finalScore;
+
+        localStorage.setItem("highscore1",list1);
+        localStorage.setItem("highscore2",list2);
+        localStorage.setItem("highscore3",list3);
+        localStorage.setItem("highscore4",list4);
+        localStorage.setItem("highscore5",list5);
+
+        holdQuestion.appendChild(highScore);
+        highScore.textContent = "Score Board";
+       
+    })
+})
+
+//this function activates the timer and stops the user from playing when time runs out.
+function activateTimer() {
+
+
+    var changeTime = setInterval( function() {
+        countdow--;
+        timer.textContent = countdow;
+
+        if (countdow <= 0) {
+
+            clearInterval(changeTime);
+
+            button1.remove();
+            button2.remove();
+            button3.remove();
+            button4.remove();
+    
+            h2El.textContent = "Would you like to enter in your new score or play again?";
+
+            holdQuestion.appendChild(startBt);
+            startBt.textContent = "Play Again";
+
+            holdQuestion.appendChild(aHighscore);
+            aHighscore.textContent = "Add your score!";
+        }
+    } , 1000)
+}
+//this function gets a random number
+function randomNum(x,y){
+    min = Math.ceil(x);
+    max = Math.floor(y);
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  }
+// we have it start out as the ready to start and start button
+// when user clicks button, than we change h2 to say question and add 4 more buttons and start a timer
+// if user clicks wrong button then timer gets set amount decrease
+// once clock runs out we change h2 to say score and give them option to add score and name to highscore or play again
+//highscore is saved in local memory
