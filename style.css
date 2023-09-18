@@ -1,0 +1,11 @@
+header h1 {
+    background-color: blueviolet;
+    color: white;
+    height: 75px;
+    font-size: 60px;
+}
+header div{
+    display: flex;
+    justify-content:space-around;
+    height: 20px;
+}

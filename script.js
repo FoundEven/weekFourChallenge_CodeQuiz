@@ -13,10 +13,7 @@ var button2 = document.createElement("button");
 var button3 = document.createElement("button");
 var button4 = document.createElement("button");
 var list1 = document.createElement("li");
-var list2 = document.createElement("li");
-var list3 = document.createElement("li");
-var list4 = document.createElement("li");
-var list5 = document.createElement("li");
+
 var aHighscore = document.createElement("button");
 var scoreText = document.createElement("textarea");
 var enter = document.createElement("button");
@@ -24,6 +21,7 @@ var enter = document.createElement("button");
 var countdow = 20;      //varible to keep track of countdown
 var score = 0;          //varible to keep track of score
 var holdKey = "";
+var prevScore = localStorage.getItem("prevScore");
 // this object is the questions and answers and correct answer
 var questionEl = {
    question: ["What key word do you use to get code that loops?","What data types can be in an object?","What method do you use to get all letters in a string to lower case?","How do you get content on webpage using Javascript?","How do you connect a element that you created in Javascript to your HTML?"],   //questions
@@ -37,16 +35,13 @@ var questionEl = {
 //this event listener will start when the start button is pressed
 startBt.addEventListener("click", function(){
     //reset score and countdown
-    countdow = 20;
+    //countdow = 20;
     score = 0;
     // remove any elements that due not need to be hear
     startBt.remove();
     aHighscore.remove();
     list1.remove();
-    list2.remove();
-    list3.remove();
-    list4.remove();
-    list5.remove();
+
     // adds answer buttons
     holdQuestion.appendChild(button1);
     holdQuestion.appendChild(button2);
@@ -112,21 +107,12 @@ highScore.addEventListener("click",function() {
     h2El.textContent = "Score!";
 
     highList.appendChild(list1);
-    highList.appendChild(list2);
-    highList.appendChild(list3);
-    highList.appendChild(list4);
-    highList.appendChild(list5);
+
     var p1 = localStorage.getItem("highscore1");
-    var p2 = localStorage.getItem("highscore2");
-    var p3 = localStorage.getItem("highscore3");
-    var p4 = localStorage.getItem("highscore4");
-    var p5 = localStorage.getItem("highscore5");
+
 
     list1.textContent = p1;
-    list2.textContent = p2;
-    list3.textContent = p3;
-    list4.textContent = p4;
-    list5.textContent = p5;
+
     startBt.textContent = "Start Game";
 })
 //thsi function allows the user to add their name and score to score borad
@@ -151,17 +137,14 @@ aHighscore.addEventListener("click", function(){
         finalScore = holdKey + "-" + score;
         console.log(finalScore);
 
-        list5 = list4;
-        list4 = list3;
-        list3 = list2;
-        list2 = list1;
+
+        if (score >= prevScore){
         list1 = finalScore;
 
         localStorage.setItem("highscore1",list1);
-        localStorage.setItem("highscore2",list2);
-        localStorage.setItem("highscore3",list3);
-        localStorage.setItem("highscore4",list4);
-        localStorage.setItem("highscore5",list5);
+        localStorage.setItem("prevScore", score);
+        }
+
 
         holdQuestion.appendChild(highScore);
         highScore.textContent = "Score Board";
@@ -178,7 +161,7 @@ function activateTimer() {
         timer.textContent = countdow;
 
         if (countdow <= 0) {
-
+            countdow = 20;
             clearInterval(changeTime);
 
             button1.remove();
